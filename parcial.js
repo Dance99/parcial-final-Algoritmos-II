@@ -9,6 +9,9 @@ class pedidos{
         this.Descripcion = Descripcion;
     }
 }
+//lista de pedidos(memory)
+let pedido = [];
+
 
 //Ahora se crea el sistema de pedidos
 class sistemapedido {
@@ -49,3 +52,5 @@ class sistemapedido {
         this.pedidos.filter(pedido => pedido.ID !== ID);
     }
 }
+
+console.log(pedidos);
