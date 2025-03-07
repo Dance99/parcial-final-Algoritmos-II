@@ -176,7 +176,8 @@ class PedidoAdministrado {
     }
 }
 
-//creao un administrador de pedidos
+
+//creo un administrador de pedidos
 const administrador = new PedidoAdministrado();
 
 // Crear un consumidor
@@ -191,6 +192,7 @@ const productos = [producto1, producto2];
 const pedidoAlto = administrador.agregarPedido(consumidor1, productos, "2025-03-07", "Alta");
 const pedidoMedio = administrador.agregarPedido(consumidor1, [producto1], "2025-03-08", "Media");
 const pedidoBajo = administrador.agregarPedido(consumidor1, [producto2], "2025-03-09", "Baja");
+
 
 // Mostrar todos los pedidos
 console.log(" Lista de pedidos:");
