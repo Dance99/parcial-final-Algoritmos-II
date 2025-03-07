@@ -1,37 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión de Pedidos</title>
+  <title>Document</title>
 </head>
 <body>
-  <h1>Gestión de Pedidos</h1>
-  <button onclick="registrarPedido()">Registrar Pedido</button>
-  <button onclick="consultarPedidos()">Consultar Pedidos</button>
-  <div id="pedidos"></div>
-
-  <script>
-    function registrarPedido() {
-      fetch('/registrarPedido', { method: 'POST' })
-        .then(response => response.text())
-        .then(message => console.log(message));
-    }
-
-    function consultarPedidos() {
-      fetch('/consultarPedidos')
-        .then(response => response.json())
-        .then(pedidos => {
-          const pedidosDiv = document.getElementById('pedidos');
-          pedidosDiv.innerHTML = '';
-          pedidos.forEach(pedido => {
-            const pedidoElement = document.createElement('p');
-            pedidoElement.textContent = `ID: ${pedido.id}, Cliente: ${pedido.cliente}, Fecha: ${pedido.fecha}`;
-            pedidosDiv.appendChild(pedidoElement);
-          });
-        });
-    }
-  </script>
   <script src="parcial.js"></script>
 </body>
 </html>
