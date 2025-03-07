@@ -1,56 +1,69 @@
-// se defina la clase "pedidos"
-class pedidos{
-     //Utilizo el metodo constructor para crear e iniciar un objeto creado.
-    constructor (Nombre, ID, fecha, Prioridad, Descripcion){
-        this.Nombre = Nombre;
-        this.ID = ID;
-        this.fecha;
-        this.Prioridad = Prioridad;
-        this.Descripcion = Descripcion;
+class Productos {
+    constructor(id, nombre, precio) {
+        if (!id || !nombre || !precio) {
+            throw new Error("Todos los campos de Productos son obligatorios");
+        }
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
     }
 }
-//lista de pedidos(memory)
-let pedido = [];
 
+class Consumidor {
+    constructor(id, nombre) {
+        if (!id || !nombre) {
+            throw new Error("Todos los campos de Consumidor son obligatorios");
+        }
+        this.id = id;
+        this.nombre = nombre;
+    }
+}
 
-//Ahora se crea el sistema de pedidos
-class sistemapedido {
-    constructor (){
-        this.pedidos = [];
+class SistemaDePedido {
+    constructor(id, consumidor, productos, fecha, prioridad) {
+        if (!id || !consumidor || !productos.length || !fecha || !prioridad) {
+            throw new Error("Todos los campos de SistemaDePedido son obligatorios");
+        }
+        this.id = id;
+        this.consumidor = consumidor;
+        this.productos = productos;
+        this.fecha = fecha;
+        this.prioridad = prioridad;
+        this.procesado = false; // Estado binario: false = No procesado, true = Procesado
     }
 
-    //metodo para registrar un nuevo pedido en el sitema
-    registrarpedido(pedido){
-        this.pedidos.push(pedido);
+    marcarProcesado() {
+        this.procesado = true;
+    }
+    
+    eliminarProducto(productoId) {
+        const index = this.productos.findIndex(producto => producto.id === productoId);
+        if (index === -1) {
+            console.log(`Producto con ID ${productoId} no encontrado`);
+            return;
+        }
+        this.productos.splice(index, 1);
+    }
+}
+
+
+class PedidoAdministrado {
+    constructor() {
+        this.pedidos = []; // Lista de pedidos en memoria
     }
 
-    //consultar el estado de un pedido 
-    consultarPedido(){
+    agregarPedido(consumidor, productos, fecha, prioridad) {
+        const nuevoPedido = new SistemaDePedido(Date.now(), consumidor, productos, fecha, prioridad);
+        this.pedidos.push(nuevoPedido);
+        return nuevoPedido;
+    }
+
+    obtenerPedidos() {
         return this.pedidos;
     }
-
-    // Buscar el pedido por ID
-    buscarpedidoid(ID) {
-        return this.pedidos.find(pedido => pedido.ID === ID);
-    }
-
-    //ordenar pedidos por fecha o prioridad
-    pedidoPorFecha(criterio){
-        if (criterio === `fecha`) {
-            return this.pedidos.sort((a, b) => new Date(a.fecha) - new Date (b.fecha));
-        } else if(criterio === `prioridad`){
-           //
-            return this.pedidos.sort((a, b) =>{
-                    const prioridades = {alta: 3, media: 2, baja: 1,};
-                    return prioridades [a.Prioridad] - [b.Prioridad];
-            }); 
-        }
-    }
-
-    //eliminar pedido por ID
-    eliminarPorId(ID){
-        this.pedidos.filter(pedido => pedido.ID !== ID);
-    }
 }
 
-console.log(pedidos);
+module.exports = { Productos, Consumidor, SistemaDePedido, PedidoAdministrado };
+
+//exporta la función previamente declarada
+module.exports = { Productos, Consumidor, SistemaDePedido, PedidoAdministrado };
