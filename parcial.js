@@ -197,12 +197,12 @@ console.log(" Lista de pedidos:");
 administrador.mostrarPedidos();
 
 // Buscar un pedido específico
-console.log("🔍 Buscando pedido con ID:", pedido1.id);
-console.log(administrador.buscarPedidoPorId(pedido1.id));
+console.log("🔍 Buscando pedido con ID:", pedidoAlto.id);
+console.log(administrador.buscarPedidoPorId(pedidoAlto.id));
 
 // Eliminar un pedido
 console.log(" Eliminando pedido...");
-administrador.eliminarPedido(pedido1.id);
+administrador.eliminarPedido(pedidoAlto.id);
 administrador.mostrarPedidos();
 
 // Ordenar pedidos por prioridad
