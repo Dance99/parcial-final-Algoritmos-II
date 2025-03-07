@@ -150,10 +150,11 @@ class LinkedList {
 class PedidoAdministrado {
     constructor() {
         this.pedidos = new LinkedList();
+        this.contadorId = 1;
     }
 
     agregarPedido(consumidor, productos, fecha, prioridad) {
-        const nuevoPedido = new SistemaDePedido(Date.now(), consumidor, productos, fecha, prioridad);
+        const nuevoPedido = new SistemaDePedido(this.contadorId++, consumidor, productos, fecha, prioridad);
         this.pedidos.aggFinal(nuevoPedido);
         return nuevoPedido;
     }
@@ -179,16 +180,17 @@ class PedidoAdministrado {
 const administrador = new PedidoAdministrado();
 
 // Crear un consumidor
-const consumidor1 = new Consumidor(1, "Juan Pérez");
+const consumidor1 = new Consumidor(301, "Carlos Gómez");
 
 // Crear productos
-const producto1 = new Productos(101, "Laptop", 1200);
-const producto2 = new Productos(102, "Mouse", 20);
+const producto1 = new Productos(101, "Teclado", 50);
+const producto2 = new Productos(102, "Monitor", 20);
 const productos = [producto1, producto2];
 
-// Agregar pedidos
-const pedido1 = administrador.agregarPedido(consumidor1, productos, "2025-03-07", "Alta");
-const pedido2 = administrador.agregarPedido(consumidor1, [producto1], "2025-03-08", "Media");
+// Agregar pedidos con diferentes prioridades
+const pedidoAlto = administrador.agregarPedido(consumidor1, productos, "2025-03-07", "Alta");
+const pedidoMedio = administrador.agregarPedido(consumidor1, [producto1], "2025-03-08", "Media");
+const pedidoBajo = administrador.agregarPedido(consumidor1, [producto2], "2025-03-09", "Baja");
 
 // Mostrar todos los pedidos
 console.log(" Lista de pedidos:");
