@@ -1,7 +1,8 @@
+// Clase Productos
 class Productos {
     constructor(id, nombre, precio) {
         if (!id || !nombre || !precio) {
-            throw new Error("Todos los campos de Productos son obligatorios");
+            throw new Error("Todos los campos son obligatorios");
         }
         this.id = id;
         this.nombre = nombre;
@@ -9,33 +10,32 @@ class Productos {
     }
 }
 
+// Clase Consumidor
 class Consumidor {
     constructor(id, nombre) {
         if (!id || !nombre) {
-            throw new Error("Todos los campos de Consumidor son obligatorios");
+            throw new Error("Todos los campos son obligatorios");
         }
         this.id = id;
         this.nombre = nombre;
     }
 }
 
+// Clase SistemaDePedido
 class SistemaDePedido {
     constructor(id, consumidor, productos, fecha, prioridad) {
-        if (!id || !consumidor || !productos.length || !fecha || !prioridad) {
-            throw new Error("Todos los campos de SistemaDePedido son obligatorios");
-        }
         this.id = id;
         this.consumidor = consumidor;
         this.productos = productos;
         this.fecha = fecha;
         this.prioridad = prioridad;
-        this.procesado = false; // Estado binario: false = No procesado, true = Procesado
+        this.procesado = false; // Estado en binario (false = no procesado, true = procesado)
     }
 
     marcarProcesado() {
         this.procesado = true;
     }
-    
+
     eliminarProducto(productoId) {
         const index = this.productos.findIndex(producto => producto.id === productoId);
         if (index === -1) {
@@ -46,66 +46,166 @@ class SistemaDePedido {
     }
 }
 
+// Clase Nodo para Lista Enlazada
+class Nodo {
+    constructor(pedido) {
+        this.pedido = pedido;
+        this.siguiente = null;
+    }
+}
 
+// Clase LinkedList (Lista Enlazada)
+class LinkedList {
+    constructor() {
+        this.cabeza = null;
+    }
+
+    aggFinal(pedido) {
+        const nuevoNodo = new Nodo(pedido);
+        if (!this.cabeza) {
+            this.cabeza = nuevoNodo;
+        } else {
+            let actual = this.cabeza;
+            while (actual.siguiente) {
+                actual = actual.siguiente;
+            }
+            actual.siguiente = nuevoNodo;
+        }
+    }
+
+    eliminarPedidoPorId(id) {
+        if (!this.cabeza) {
+            console.log("La lista está vacía");
+            return;
+        }
+
+        if (this.cabeza.pedido.id === id) {
+            this.cabeza = this.cabeza.siguiente;
+            console.log(`Pedido con ID ${id} eliminado`);
+            return;
+        }
+
+        let actual = this.cabeza;
+        while (actual.siguiente && actual.siguiente.pedido.id !== id) {
+            actual = actual.siguiente;
+        }
+
+        if (!actual.siguiente) {
+            console.log(`Pedido con ID ${id} no encontrado`);
+            return;
+        }
+
+        actual.siguiente = actual.siguiente.siguiente;
+        console.log(`Pedido con ID ${id} eliminado`);
+    }
+
+    buscarPedido(id) {
+        let actual = this.cabeza;
+        while (actual) {
+            if (actual.pedido.id === id) {
+                return actual.pedido;
+            }
+            actual = actual.siguiente;
+        }
+        return null;
+    }
+
+    ordenarCriterio(criterio) {
+        if (!this.cabeza || !this.cabeza.siguiente) {
+            return;
+        }
+
+        let listaOrdenada = null;
+        let actual = this.cabeza;
+
+        while (actual) {
+            const siguiente = actual.siguiente;
+
+            if (!listaOrdenada || actual.pedido[criterio] < listaOrdenada.pedido[criterio]) {
+                actual.siguiente = listaOrdenada;
+                listaOrdenada = actual;
+            } else {
+                let temp = listaOrdenada;
+                while (temp.siguiente && temp.siguiente.pedido[criterio] < actual.pedido[criterio]) {
+                    temp = temp.siguiente;
+                }
+                actual.siguiente = temp.siguiente;
+                temp.siguiente = actual;
+            }
+            actual = siguiente;
+        }
+        this.cabeza = listaOrdenada;
+    }
+
+    mostrarLista() {
+        let actual = this.cabeza;
+        while (actual) {
+            console.log(actual.pedido);
+            actual = actual.siguiente;
+        }
+    }
+}
+
+// Clase PedidoAdministrado
 class PedidoAdministrado {
     constructor() {
-        this.pedidos = []; // Lista de pedidos en memoria
+        this.pedidos = new LinkedList();
     }
 
     agregarPedido(consumidor, productos, fecha, prioridad) {
         const nuevoPedido = new SistemaDePedido(Date.now(), consumidor, productos, fecha, prioridad);
-        this.pedidos.push(nuevoPedido);
+        this.pedidos.aggFinal(nuevoPedido);
         return nuevoPedido;
     }
 
-    obtenerPedidos() {
-        return this.pedidos;
-    }
-
     buscarPedidoPorId(id) {
-        console.log(`Buscando pedido con ID: ${id}`);
-        
-        for (let i = 0; i < this.pedidos.length; i++) {
-            console.log(`Revisando pedido en índice ${i}, ID: ${this.pedidos[i].id}`);
-            
-            if (this.pedidos[i].id === id) {
-                console.log(`Pedido encontrado en índice ${i}`);
-                return this.pedidos[i]; // Devuelve el pedido si lo encuentra
-            }
-        }
-        
-        console.log("Pedido no encontrado");
-        return null; // Retorna null si no se encuentra el pedido
+        return this.pedidos.buscarPedido(id);
     }
 
-    contarPedidos() {
-        let contador = 0;
-        for (let i = 0; i < this.pedidos.length; i++) {
-            contador++;
-        }
-        console.log(`Total de pedidos: ${contador}`);
-        return contador;
+    eliminarPedido(id) {
+        this.pedidos.eliminarPedidoPorId(id);
     }
 
-    marcarTodosProcesados() {
-        for (let i = 0; i < this.pedidos.length; i++) {
-            this.pedidos[i].marcarProcesado();
-        }
-        console.log("Todos los pedidos han sido marcados como procesados.");
+    ordenarPedidos(criterio) {
+        this.pedidos.ordenarCriterio(criterio);
+    }
+
+    mostrarPedidos() {
+        this.pedidos.mostrarLista();
     }
 }
 
+//creao un administrador de pedidos
 const administrador = new PedidoAdministrado();
 
-// Agregamos pedidos de prueba
-const consumidor = new Consumidor(1, "Rodrigo Aguirre");
-const productos = [new Productos(101, "Computador", 1200)];
-administrador.agregarPedido(consumidor, productos, "2025-03-07", "Alta");
-administrador.agregarPedido(consumidor, productos, "2025-03-08", "Media");
+// Crear un consumidor
+const consumidor1 = new Consumidor(1, "Juan Pérez");
 
-// Contamos pedidos
-administrador.contarPedidos(); // Debería mostrar "Total de pedidos: 2"
+// Crear productos
+const producto1 = new Productos(101, "Laptop", 1200);
+const producto2 = new Productos(102, "Mouse", 20);
+const productos = [producto1, producto2];
 
-// Marcamos todos como procesados
-administrador.marcarTodosProcesados();
+// Agregar pedidos
+const pedido1 = administrador.agregarPedido(consumidor1, productos, "2025-03-07", "Alta");
+const pedido2 = administrador.agregarPedido(consumidor1, [producto1], "2025-03-08", "Media");
+
+// Mostrar todos los pedidos
+console.log(" Lista de pedidos:");
+administrador.mostrarPedidos();
+
+// Buscar un pedido específico
+console.log("🔍 Buscando pedido con ID:", pedido1.id);
+console.log(administrador.buscarPedidoPorId(pedido1.id));
+
+// Eliminar un pedido
+console.log(" Eliminando pedido...");
+administrador.eliminarPedido(pedido1.id);
+administrador.mostrarPedidos();
+
+// Ordenar pedidos por prioridad
+console.log(" Ordenando pedidos por prioridad:");
+administrador.ordenarPedidos("prioridad");
+administrador.mostrarPedidos();
+
 
